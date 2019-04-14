@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Document</title>
+</head>
+<body>
+  <button onclick="bubblingSort()">冒泡排序</button>
+  <button onclick="insertionSort()">插入排序</button>
+  <button onclick="selectSort()">选择排序</button>
+  <button onclick="binaryTreeSort()">二叉树排序</button>
+  <button onclick="quickSort()">快速排序</button>
+  <script>
+    let arr = Array.from({length: 30000}).map(v=>{ return Math.floor(Math.random()*100000)});
+    console.log('原始数据', arr);
+
+    //冒泡排序
+    function bubblingSort(array = [...arr]){
+      const start = new Date();
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = i + 1; j < array.length; j++) {
+          if(array[i] > array[j]) {
+            [array[i], array[j]] = [array[j], array[i]];
+          };
+        }
+      }
+      const end = new Date();
+      console.log(`冒泡排序耗时${end - start}`, array);
+    }
+
+    function insertionSort(array = [...arr]){
+      const start = new Date();
+      for (let i = 0; i < array.length - 1; i++) {
+        for (let j = i + 1; j >= 1; j--) {
+          if(array[j] < array[j - 1]) {
+            [array[j-1], array[j]] = [array[j], array[j-1]];
+          }else{
+            break;
+          }
+        }
+      }
+      const end = new Date();
+      console.log(`插入排序耗时${end - start}`, array);
+    }
+
+    //选择排序
+    function selectSort(array = [...arr]){
+      const start = new Date();
+      for (let i = 0; i < array.length - 1; i++) {
+        let min = i;
+        for (let j = i + 1; j < array.length; j++) {
+          const element = array[j];
+          if(array[min] > element) min = j;
+        }
+        [array[i], array[min]] = [array[min], array[i]];
+      }
+      const end = new Date();
+      console.log(`选择排序耗时${end - start}`, array);
+    }
+
+    //二叉树排序
+    function binaryTreeSort(array = [...arr]){
+      const start = new Date();
+      //生成二叉树
+      function binaryTree (arr){
+        // 根节点
+        let rootNode = null;
+        //生成节点
+        function Node(value){
+          this.left = null;
+          this.right = null;
+          this.value = value;
+        }
+        // 插入节点
+        function insertNode(node, newNode){
+          if(node.value >= newNode.value){
+            node.left && insertNode(node.left, newNode);
+            node.left === null && (node.left = newNode);
+          }else{
+            node.right && insertNode(node.right, newNode);
+            node.right === null && (node.right = newNode);
+          }
+        }
+        arr.forEach(v=>{
+          const node = new Node(v);
+          if(!rootNode){
+            rootNode = node
+          }else{
+            insertNode(rootNode, node);
+          }
+        })
+        return rootNode;
+      }
+      // 中序遍历
+      function middleOrder(tree, callback){
+        tree.left && middleOrder(tree.left, callback);
+        callback(tree);
+        tree.right && middleOrder(tree.right, callback)
+      }
+      const result = [];
+      // console.warn(binaryTree(array));
+      middleOrder(binaryTree(array), (item)=>{result.push(item.value)})
+      const end = new Date();
+      console.log(`二叉树排序耗时${end - start}`, result);
+    }
+
+    //快速排序
+    function quickSort(array = [...arr]){
+      const start = new Date();
+      function sort (arr){
+        if(arr.length <= 1) return arr;
+        const left = [], middle = [], right = [];
+        arr.forEach(v => {
+          v < arr[0] && left.push(v);
+          v === arr[0] && middle.push(v);
+          v > arr[0] && right.push(v);
+        })
+        return sort(left).concat(middle).concat(sort(right));
+      }
+      let result = sort(array);
+      const end = new Date();
+      console.log(`快速排序耗时${end - start}`, result);
+    }
+
+  </script>
+</body>
+</html>
