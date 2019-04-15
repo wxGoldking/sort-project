@@ -10,6 +10,7 @@
   <button onclick="bubblingSort()">冒泡排序</button>
   <button onclick="insertionSort()">插入排序</button>
   <button onclick="selectSort()">选择排序</button>
+  <button onclick="mergerSort()">归并排序</button>
   <button onclick="binaryTreeSort()">二叉树排序</button>
   <button onclick="quickSort()">快速排序</button>
   <script>
@@ -58,6 +59,47 @@
       }
       const end = new Date();
       console.log(`选择排序耗时${end - start}`, array);
+    }
+
+
+    //归并排序
+    function mergerSort(array = [...arr]){
+      // 拆成两个数组比较
+      function sort(arr){
+        if(arr.length < 2) return arr;
+        let mid = Math.floor(arr.length / 2);
+        let left = arr.slice(0, mid),
+            right  = arr.slice(mid, arr.length);
+        return merge(sort(left),sort(right));
+      }
+
+      // 挨个两两比较两个数组的数据，小的加入结果数组
+      function merge(left, right){
+        const result = [], length = left.length + right.length;
+        for (let i = 0, j = 0, index = 0; index < length; index++) {
+          if(i >= left.length) {
+            result[index] = right[j++];
+            continue;
+          }
+          if(j >= right.length) {
+            result[index] = left[i++];
+            continue;
+          }
+          if(left[i] < right[j]){
+            result[index] = left[i++]
+            continue;
+          }
+          if(left[i] >= right[j]){
+            result[index] = right[j++]
+            continue;
+          }
+        }
+        return result;
+      }
+      const start = new Date();
+      let result = sort(array);
+      const end = new Date();
+      console.log(`归并排序耗时${end - start}`, result);
     }
 
     //二叉树排序
